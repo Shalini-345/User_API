@@ -20,7 +20,7 @@ async fn register_user(
 
     match diesel::insert_into(users::table)
         .values(&*new_user)
-        .execute(conn) // Correctly pass the mutable reference
+        .execute(conn)
     {
         Ok(_) => HttpResponse::Ok().body("User registered successfully"),
         Err(e) => {

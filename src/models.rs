@@ -10,8 +10,8 @@ pub struct User {
     pub password: String,
 }
 
-#[derive(Insertable, Deserialize, Serialize)] // Added Serialize
-#[diesel(table_name = users)] // Match the schema table name
+#[derive(Insertable, Deserialize, Serialize)] 
+#[diesel(table_name = users)] 
 pub struct NewUser {
     pub username: String,
     pub email: String,

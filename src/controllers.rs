@@ -4,27 +4,25 @@ use crate::models::{User, NewUser};
 use crate::schema::users;
 use crate::db::establish_connection_pool;
 use reqwest::Client;
-use serde_json::Value;  // Add this for better handling of JSON responses
+use serde_json::Value;  
 
-// Register a new user
 #[post("/users/register")]
 async fn register_user(new_user: web::Json<NewUser>) -> impl Responder {
-    let conn = establish_connection(); // Establish DB connection
+    let conn = establish_connection();
 
-    // Creating a NewUser struct
+  
     let new_user = NewUser {
         username: new_user.username.clone(),
         email: new_user.email.clone(),
         password: new_user.password.clone(),
     };
 
-    // Insert the new user into the database
     let user = diesel::insert_into(users::table)
-        .values(&new_user) // Insert new user values
-        .get_result::<User>(&conn) // Corrected to pass &conn instead of &mut &conn
+        .values(&new_user) 
+        .get_result::<User>(&conn)
         .expect("Error saving new user");
 
-    HttpResponse::Created().json(user) // Return the created user as a JSON response
+    HttpResponse::Created().json(user) 
 }
 
 // Login the user using Padlock API
@@ -35,7 +33,7 @@ async fn login_user(login_data: web::Json<NewUser>) -> impl Responder {
     
     let response = client
         .post(padlock_url)
-        .json(&login_data)  // Sending JSON login data to Padlock API
+        .json(&login_data)  
         .send()
         .await;
 
@@ -46,7 +44,7 @@ async fn login_user(login_data: web::Json<NewUser>) -> impl Responder {
                 match res.json::<Value>().await {
                     Ok(json) => {
                         if let Some(token) = json["token"].as_str() {
-                            HttpResponse::Ok().json(token) // Return the token if found
+                            HttpResponse::Ok().json(token) 
                         } else {
                             HttpResponse::Unauthorized().body("Token not found in response")
                         }
